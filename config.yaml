@@ -1,0 +1,4 @@
+logLevel: debug
+region: us-east-1
+profile: golang
+credentialsChainVerboseErrors: true
