@@ -1,9 +1,6 @@
 package logger
 
 import (
-	"fmt"
-	"strings"
-
 	"aws-tutorial/core/config"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -33,7 +30,7 @@ type logger struct {
 	*logrus.Logger
 }
 
-func New(conf *config.Configuration) (Logger, error) {
+func New(conf *config.Configuration) Logger {
 	customFormatter := new(logrus.TextFormatter)
 	customFormatter.TimestampFormat = logTimeFormat
 	customFormatter.FullTimestamp = true
@@ -41,15 +38,12 @@ func New(conf *config.Configuration) (Logger, error) {
 	l.Logger = logrus.New()
 
 	l.SetFormatter(customFormatter)
-	switch strings.ToLower(conf.LogLevel) {
-	case "info":
-		l.SetLevel(logrus.InfoLevel)
-	case "debug":
+	if conf.LogDebug {
 		l.SetLevel(logrus.DebugLevel)
-	default:
-		return nil, fmt.Errorf("unknown LogLevel: %q", conf.LogLevel)
+	} else {
+		l.SetLevel(logrus.InfoLevel)
 	}
-	return l, nil
+	return l
 }
 
 func (lo logger) Log(args ...interface{}) {

@@ -8,10 +8,10 @@ import (
 )
 
 type Configuration struct {
-	LogLevel                      string `yaml:"logLevel"`
 	Region                        string `yaml:"region"`
 	Profile                       string `yaml:"profile"`
 	CredentialsChainVerboseErrors bool   `yaml:"credentialsChainVerboseErrors"`
+	LogDebug                      bool   `yaml:"logDebug"`
 }
 
 const ConfigPathEnv = "APP_CONFIG"

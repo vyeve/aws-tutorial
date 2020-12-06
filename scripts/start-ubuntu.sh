@@ -15,7 +15,7 @@ echo "waiting for $INSTANCEID ..."
 aws ec2 wait instance-running --instance-ids $INSTANCEID
 PUBLICNAME=$(aws ec2 describe-instances --instance-ids $INSTANCEID --query "Reservations[0].Instances[0].PublicDnsName" --output text)
 echo "$INSTANCEID is accepting SSH connections under $PUBLICNAME"
-echo "ssh -i mykey.pem ec2-user@$PUBLICNAME"
+echo "ssh ubuntu@$PUBLICNAME"
 read -p "Press [Enter] key to terminate $INSTANCEID ..."
 aws ec2 terminate-instances --instance-ids $INSTANCEID
 echo "terminating $INSTANCEID ..."
