@@ -1,0 +1,22 @@
+---
+# Source:
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Test CloudFormation
+  template.
+  Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
+Metadata:
+  Instances:
+    Description: "Information about the instances"
+  Databases: 
+    Description: "Information about the databases"
+Parameters: 
+  InstanceTypeParameter: 
+    Type: String
+    Default: t2.micro
+    AllowedValues: 
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
