@@ -29,6 +29,7 @@ const (
 	Ubuntu18_04LTS_ARM
 	AmazonLinux2x86
 	AmazonLinux2ARM
+	RedHat_x86
 )
 
 type ami struct {
@@ -69,6 +70,11 @@ var supportedInstanceTypes = map[InstanceType]ami{
 	// 	user: "ec2-user",
 	// 	ami:  "ami-03156384f702d4eaf",
 	// },
+	RedHat_x86: {
+		name: "Red Hat based image",
+		user: "ec2-user",
+		ami:  "ami-096fda3c22c1c990a",
+	},
 }
 
 func (it InstanceType) IsValid() bool {
