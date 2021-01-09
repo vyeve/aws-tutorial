@@ -1,0 +1,108 @@
+# AWSTemplateFormatVersion identifies the capabilities of the template
+# Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
+AWSTemplateFormatVersion: "2010-09-09"
+# Description enables to include comments about template
+# Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-description-structure.html
+Description: >
+  The first Cloud Formation Template.
+  As as source was taken:
+  https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html
+# Metadata includes arbitrary JSON or YAML objects that provide details about the template
+# Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/metadata-section-structure.html
+Metadata:
+  Instances:
+    Description: "Information about the instances"
+  Databases:
+    Description: "Information about the databases"
+# Parameters enable to input custom values to template each time create or update a stack.
+Parameters:
+  InstanceType:
+    Type: String # | Number | List<Number> | CommaDelimitedList
+    Default: t2.micro
+    # AllowedPattern:
+    #   - "*.micro"
+    AllowedValues:
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+    ConstraintDescription: can be only t2.micro, m1.small or m1.large
+    # MaxValue: 15
+    # MinValue: 5
+    MaxLen: 8
+    MinLen: 8
+    NoEcho: false
+  ServerPortExecution:
+    Type: Number
+    Default: 8080
+    MaxValue: 9999
+    MinValue: 8000
+    NoEcho: false
+    Description: port on which server will be exposed
+    ConstraintDescription: port number should be in range 8000-9999
+  AWSKeyPair:
+    Description: Amazon EC2 Key Pair
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Default: aws_tutorial
+  ServerSubnetIDs:
+    Description: Subnet IDs
+    Type: "List<AWS::EC2::Subnet::Id>"
+  ImageId:
+    Description: List of ImageID
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
+  VPC:
+    Description: List of available VPCs
+    Type: "List<AWS::EC2::VPC::Id>"
+    Default: vpc-ffda1782
+  EnvType:
+    Description: >-
+      environment for task. Possible values are: dev,test,prod
+    AllowedValues:
+      - test
+      - dev
+      - prod
+# Rules validates a parameter or a combination of parameters passed to a template
+# during a stack creation or stack update
+# Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/rules-section-structure.html
+Rules:
+  devInstanceType:
+    RuleCondition: !Equals
+      - !Ref Environment
+      - dev
+    Assertions:
+      - Assert:
+          "Fn::Equal":
+            - - t2.micro
+            - !Ref InstanceType
+        AssertDescription: "For a dev environment, the instance type must be t2.micro"
+  prodInstanceType:
+    RuleCondition: !Equals
+      - !Ref EnvType
+      - prod
+    Assertions:
+      - Assert:
+          "Fn::Contains":
+            - - m1.large
+            - !Ref InstanceType
+        AssertDescription: "For a production environment, the instance type must be m1.large"
+# Mappings matches a key to a corresponding set of named values. 
+# Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html
+Mappings: 
+  RegionMap: 
+    us-east-1: 
+      "HVM64": "ami-096fda3c22c1c990a"
+    us-west-1: 
+      "HVM64": "ami-00ddb0e5626798373"
+    eu-west-1: 
+      "HVM64": "ami-04d29b6f966df1537"
+    ap-southeast-1: 
+      "HVM64": "ami-08569b978cc4dfa10"
+    ap-northeast-1: 
+      "HVM64": "ami-089e6b3b328e5a2c1"
+# Conditions section contains statements that define the circumstances under which 
+# entities are created or configured.
+# Source: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
+Conditions:
+  CreateProdResources: !Equals 
+    - !Ref EnvType
+    - prod
